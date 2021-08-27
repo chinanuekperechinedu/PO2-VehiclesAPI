@@ -6,9 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.udacity.vehicles.client.maps.MapsClient;
@@ -148,6 +146,23 @@ public class CarControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void updateCar() throws Exception {
+
+        Car car = getCar();
+        car.getDetails().setMileage(32550);
+        car.getDetails().setEngine("3.0L V4");
+        mvc.perform(
+                        put("/cars/{id}", 1l)
+                                .content(json.write(car).getJson())
+                                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details.engine", is("3.0L V4")))
+                .andExpect(jsonPath("$.details.mileage", is(32550)));
+
     }
 
     /**
